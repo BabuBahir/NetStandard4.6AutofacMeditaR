@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using Autofac;
 using Autofac.Integration.WebApi;
+using MediatR;
+using MediatR.Extensions.Autofac.DependencyInjection;
 using Microsoft.Owin;
 using Owin;
 using Sample4._6Api.Controllers;
@@ -30,7 +32,7 @@ namespace Sample4._6Api
 
             // Register Web API controller in executing assembly.
             builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
-
+             
             // OPTIONAL - Register the filter provider if you have custom filters that need DI.
             // Also hook the filters up to controllers.
             builder.RegisterWebApiFilterProvider(config);
@@ -46,8 +48,17 @@ namespace Sample4._6Api
             builder.RegisterType<FirstMiddleware>().InstancePerRequest();
             //builder.RegisterType<SecondMiddleware>().InstancePerRequest();
 
+            //builder.RegisterType(typeof(IRequestHandler<GetSampleDataQuery, string>))
+            //        .As<IRequestHandler<IRequestHandler<GetSampleDataQuery, string>()
+            //        .AsImplementedInterfaces();
+            //builder.AddMediatR(typeof(Startup1).Assembly);
+            //builder.RegisterType<Mediator>().As<IMediator>();
+          //  builder.AddMediatR(this.GetType().Assembly);
+
+
             // Create and assign a dependency resolver for Web API to use.
-            var container = builder.Build();
+            var container = builder.Build(); 
+
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
 
             // The Autofac middleware should be the first middleware added to the IAppBuilder.
@@ -68,7 +79,8 @@ namespace Sample4._6Api
 
             // Make sure the Autofac lifetime scope is passed to Web API.
             app.UseAutofacWebApi(config);
-            app.UseWebApi(config);
+            app.UseWebApi(config); 
+
         }
     }
 }
